@@ -304,9 +304,19 @@ export function LineupGallery() {
         </div>
 
         {/* Content */}
-        <div className="min-h-[400px]">
-          <div className="animate-in fade-in duration-700">
-            <GalleryCarousel />
+        {/* Content */}
+        <div className="min-h-[400px] flex items-center justify-center">
+          <div className="animate-in fade-in duration-700 flex flex-col items-center justify-center gap-6 rounded-[2rem] border border-white/10 bg-white/5 backdrop-blur-md px-12 py-16 text-center">
+            <span className="text-5xl">📸</span>
+            <h3 className="text-2xl font-black uppercase tracking-tight text-white font-heading">
+              Photos Coming Soon
+            </h3>
+            <p className="text-neutral-400 text-sm max-w-xs leading-relaxed">
+              Event photos will appear here after our first musical night. 
+            </p>
+            <p className="text-neutral-400 text-sm max-w-xs leading-relaxed">
+              Stay tuned!
+            </p>
           </div>
         </div>
       </div>
