@@ -160,7 +160,7 @@ function Index() {
 
           {/* Links */}
           <div className="hidden md:flex items-center gap-12 relative z-10">
-            {[["Gallery", "#lineup"], ["About", "#about"]].map(([label, href]) => (
+            {[["Gallery", "#gallery"], ["About", "#about"]].map(([label, href]) => (
               <a 
                 key={label}
                 href={href} 
@@ -207,7 +207,7 @@ function Index() {
         <div className={`absolute top-20 left-0 right-0 md:hidden transition-all duration-300 transform ${isMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'}`}>
           <div className="bg-black/90 backdrop-blur-2xl border border-white/10 rounded-[2rem] p-6 shadow-2xl flex flex-col gap-6">
             <div className="flex flex-col gap-4 px-4 pb-4 border-b border-white/5">
-              {[["Lineup", "#lineup"], ["About", "#about"]].map(([label, href]) => (
+              {[["Gallery", "#gallery"], ["About", "#about"]].map(([label, href]) => (
                 <a 
                   key={label}
                   href={href} 
@@ -426,7 +426,7 @@ function Index() {
             <div className="space-y-6 md:text-right">
               <h4 className="text-white font-black uppercase tracking-widest text-[11px]">Quick Links</h4>
               <div className="flex flex-col md:items-end gap-3">
-                {[["Home", "/"], ["Gallery", "#lineup"], ["About", "#about"], ["Contact", "#about"]].map(([label, href]) => (
+                {[["Home", "/"], ["Gallery", "#gallery"], ["About", "#about"], ["Contact", "#about"]].map(([label, href]) => (
                   <a key={label} href={href} className="text-neutral-500 hover:text-amber-500 transition-colors uppercase tracking-[0.2em] text-[10px] font-black">{label}</a>
                 ))}
               </div>
