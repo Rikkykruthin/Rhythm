@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Ticket - Jam Nights</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="booking/styles.css" />
+</head>
+<body>
+    <div class="stars"></div>
+    <div class="moonlight"></div>
+    
+    <main class="shell">
+        <section class="card glass">
+            <div class="ticket">
+                <div class="ticket-head">
+                    <p class="kicker">Confirmed</p>
+                    <h2 class="display">Jam <span class="gold">Nights</span></h2>
+                </div>
+                <div class="ticket-body">
+                    <div class="row"><span>Name</span><strong id="t-name">Kruthin Reddy</strong></div>
+                    <div class="row"><span>Tickets</span><strong id="t-qty">1</strong></div>
+                    <div class="row"><span>Total</span><strong id="t-total">₹1.02</strong></div>
+                    <div class="row"><span>Ticket ID</span><strong id="t-id" class="gold">LJ-2K7YGJ</strong></div>
+                    <div class="qr" id="qr">Loading QR...</div>
+                    <p class="qr-note">Show this QR at the entrance</p>
+                </div>
+                <button class="cta ghost" onclick="downloadTicket()">Download Ticket</button>
+            </div>
+        </section>
+    </main>
+
+    <script src="booking/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script>
+        // Get ticket ID from URL or use default
+        const urlParams = new URLSearchParams(window.location.search);
+        const ticketId = urlParams.get('tid') || 'LJ-2K7YGJ';
+        
+        document.getElementById('t-id').textContent = ticketId;
+        
+        // Generate QR code
+        setTimeout(() => {
+            const qrEl = document.getElementById('qr');
+            
+            if (typeof QRCode === 'undefined') {
+                qrEl.innerHTML = '<p style="color:red;">QR library not loaded</p>';
+                return;
+            }
+            
+            const qrPayload = {
+                ticket_id: ticketId,
+                name: document.getElementById('t-name').textContent,
+                phone: "9032150299",
+                qty: parseInt(document.getElementById('t-qty').textContent)
+            };
+            
+            qrEl.innerHTML = '';
+            new QRCode(qrEl, {
+                text: JSON.stringify(qrPayload),
+                width: 176,
+                height: 176,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.M
+            });
+            
+            console.log('QR generated for:', qrPayload);
+        }, 500);
+        
+        async function downloadTicket() {
+            const node = document.querySelector('.ticket');
+            const canvas = await html2canvas(node, { backgroundColor: "#06070f", scale: 2 });
+            const link = document.createElement("a");
+            link.download = `jam-nights-${ticketId}.png`;
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+        }
+    </script>
+</body>
+</html>

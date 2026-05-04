@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+
+    <!-- 🔒 Allow camera usage -->
+    <meta name="permissions-policy" content="camera=(self)">
+
+    <title>Scanner — Jam Nights</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="../booking/styles.css" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body>
+    <div class="stars"></div>
+
+    <main class="shell">
+
+      <!-- 🔐 PIN SECTION -->
+      <section class="glass" id="pin-card">
+        <p class="kicker">Admin Access</p>
+        <h1 class="display">Scanner</h1>
+        <p class="tagline">Enter PIN to continue</p>
+
+        <form id="pin-form">
+          <label>PIN
+            <input
+              type="password"
+              id="pin"
+              inputmode="numeric"
+              maxlength="6"
+              required
+              autocomplete="off"
+              placeholder="Enter PIN"
+            />
+          </label>
+
+          <button class="cta" type="submit">
+            Unlock
+          </button>
+        </form>
+      </section>
+
+      <!-- 📷 SCANNER SECTION -->
+      <section class="glass hidden" id="scan-card">
+        <p class="kicker">Live Scanner</p>
+        <h1 class="display">
+          Scan <span class="gold">Ticket</span>
+        </h1>
+
+        <!-- 📷 CAMERA CONTAINER -->
+        <div id="reader" style="width: 100%; min-height: 260px;">
+          <p style="text-align:center; padding:20px; color:#aaa;">
+            📷 Camera loading...
+          </p>
+        </div>
+
+        <!-- 📊 STATUS -->
+        <div id="status" class="status warn">
+          <h2>Waiting for QR…</h2>
+        </div>
+
+        <!-- 🔁 RESCAN -->
+        <button class="cta ghost" id="rescan">
+          Scan Next
+        </button>
+      </section>
+
+    </main>
+
+    <!-- 📦 QR SCANNER LIB -->
+    <script src="https://unpkg.com/html5-qrcode"></script>
+
+    <!-- ⚙️ CONFIG -->
+    <script src="config.js"></script>
+
+    <!-- 🧠 MAIN SCRIPT -->
+    <script src="script.js"></script>
+
+  </body>
+</html>

@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Register — Jam Nights</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../booking/styles.css" />
+</head>
+<body>
+  <div class="stars"></div>
+  <div class="moonlight"></div>
+
+  <main class="shell">
+    <section class="hero glass">
+      <p class="kicker">Join Us</p>
+      <h1 class="display">Jam <span class="gold">Nights</span></h1>
+      <p class="tagline">Create an account to book tickets</p>
+
+      <form id="register-form" style="margin-top: 28px;">
+        <label>Full Name
+          <input type="text" name="name" required minlength="2" autocomplete="name" />
+        </label>
+        <label>Email
+          <input type="email" name="email" required autocomplete="email" />
+        </label>
+        <label>Phone
+          <input type="tel" name="phone" required pattern="[0-9]{10}" maxlength="10" autocomplete="tel" />
+        </label>
+        <label>Password
+          <input type="password" name="password" required minlength="6" autocomplete="new-password" />
+        </label>
+
+        <button class="cta" type="submit" id="register-btn">
+          <span>Register</span>
+        </button>
+      </form>
+
+      <p style="text-align:center; margin-top:18px; color:var(--muted); font-size:14px;">
+        Already have an account? <a href="login.html" style="color:var(--gold);">Login</a>
+      </p>
+    </section>
+  </main>
+
+  <script src="../booking/config.js"></script>
+  <script>
+    const form = document.getElementById('register-form');
+    const btn = document.getElementById('register-btn');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(form));
+
+      if (!/^[0-9]{10}$/.test(data.phone)) {
+        alert('Enter a valid 10-digit phone number');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.querySelector('span').textContent = 'Creating account...';
+
+      try {
+        const res = await fetch(`${window.JAM_CONFIG.BACKEND_URL}/auth/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        const result = await res.json();
+
+        if (!res.ok) {
+          throw new Error(result.error || 'Registration failed');
+        }
+
+        // Save token and user
+        localStorage.setItem('jam_token', result.token);
+        localStorage.setItem('jam_user', JSON.stringify(result.user));
+
+        alert('Registration successful!');
+        window.location.href = '../booking/';
+
+      } catch (err) {
+        alert(err.message);
+        btn.disabled = false;
+        btn.querySelector('span').textContent = 'Register';
+      }
+    });
+  </script>
+</body>
+</html>

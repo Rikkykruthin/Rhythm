@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Payment Verification</title>
+</head>
+<body>
+    <h1>Test Payment Verification</h1>
+    <button onclick="testVerify()">Test Verify Payment</button>
+    <pre id="result"></pre>
+
+    <script>
+        async function testVerify() {
+            const result = document.getElementById('result');
+            result.textContent = 'Testing...';
+
+            try {
+                // First create an order
+                const orderRes = await fetch('http://localhost:8082/create-order', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: 'Test User',
+                        phone: '9999999999',
+                        email: 'test@test.com',
+                        qty: 1,
+                        amount: 30708 // 307.08 rupees in paise
+                    })
+                });
+
+                const order = await orderRes.json();
+                result.textContent = 'Order created:\n' + JSON.stringify(order, null, 2);
+
+                // Note: In real scenario, Razorpay would provide the signature
+                // We can't test the full flow without actual payment
+                result.textContent += '\n\nTo complete test, make a real payment through the booking page.';
+
+            } catch (err) {
+                result.textContent = 'Error: ' + err.message;
+            }
+        }
+    </script>
+</body>
+</html>

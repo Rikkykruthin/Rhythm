@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>My Tickets — Jam Nights</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../booking/styles.css" />
+  <style>
+    .ticket-list { display: flex; flex-direction: column; gap: 16px; margin-top: 20px; }
+    .ticket-item {
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .ticket-item:hover {
+      border-color: var(--gold-soft);
+      transform: translateY(-2px);
+    }
+    .ticket-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .ticket-id {
+      font-family: 'Syne', sans-serif;
+      font-size: 18px;
+      color: var(--gold);
+      font-weight: 700;
+    }
+    .ticket-status {
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .status-paid { background: rgba(60,200,120,0.2); color: #7ef0a8; }
+    .status-used { background: rgba(244,195,74,0.2); color: var(--gold); }
+    .ticket-details {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .ticket-details strong { color: var(--ink); }
+    .logout-btn {
+      background: transparent;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      padding: 10px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .logout-btn:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="stars"></div>
+  <div class="moonlight"></div>
+
+  <main class="shell">
+    <section class="hero glass">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <p class="kicker">Welcome Back</p>
+          <h1 class="display">My <span class="gold">Tickets</span></h1>
+        </div>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+      </div>
+
+      <p class="tagline" id="user-name"></p>
+
+      <div id="tickets-container" class="ticket-list">
+        <p style="text-align:center; color:var(--muted);">Loading tickets...</p>
+      </div>
+
+      <a href="../booking/" class="cta" style="display:block; text-align:center; margin-top:20px; text-decoration:none;">
+        Book New Ticket
+      </a>
+    </section>
+  </main>
+
+  <script src="../booking/config.js"></script>
+  <script>
+    // Check if logged in
+    const token = localStorage.getItem('jam_token');
+    const user = JSON.parse(localStorage.getItem('jam_user') || '{}');
+
+    if (!token) {
+      window.location.href = 'login.html';
+    }
+
+    document.getElementById('user-name').textContent = user.name || '';
+
+    // Fetch tickets
+    async function loadTickets() {
+      try {
+        const res = await fetch(`${window.JAM_CONFIG.BACKEND_URL}/auth/my-tickets`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!res.ok) {
+          if (res.status === 401 || res.status === 403) {
+            localStorage.removeItem('jam_token');
+            localStorage.removeItem('jam_user');
+            window.location.href = 'login.html';
+            return;
+          }
+          throw new Error('Failed to load tickets');
+        }
+
+        const data = await res.json();
+        displayTickets(data.tickets);
+
+      } catch (err) {
+        console.error(err);
+        document.getElementById('tickets-container').innerHTML = 
+          '<p class="empty-state">Failed to load tickets. Please try again.</p>';
+      }
+    }
+
+    function displayTickets(tickets) {
+      const container = document.getElementById('tickets-container');
+
+      if (!tickets || tickets.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <p style="font-size:48px; margin-bottom:10px;">🎫</p>
+            <p>No tickets yet</p>
+            <p style="font-size:12px; margin-top:8px;">Book your first ticket to get started!</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = tickets.map(ticket => `
+        <div class="ticket-item" onclick="viewTicket('${ticket.ticket_id}')">
+          <div class="ticket-header">
+            <span class="ticket-id">${ticket.ticket_id}</span>
+            <span class="ticket-status status-${ticket.scanned ? 'used' : 'paid'}">
+              ${ticket.scanned ? '✓ Used' : '✓ Valid'}
+            </span>
+          </div>
+          <div class="ticket-details">
+            <div><strong>${ticket.name}</strong></div>
+            <div>Quantity: ${ticket.qty} ticket${ticket.qty > 1 ? 's' : ''}</div>
+            <div>Amount: ₹${ticket.total_amount}</div>
+            <div>Booked: ${new Date(ticket.created_at).toLocaleDateString()}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function viewTicket(ticketId) {
+      window.location.href = `../show-ticket.html?tid=${ticketId}`;
+    }
+
+    function logout() {
+      if (confirm('Are you sure you want to logout?')) {
+        localStorage.removeItem('jam_token');
+        localStorage.removeItem('jam_user');
+        window.location.href = 'login.html';
+      }
+    }
+
+    loadTickets();
+  </script>
+</body>
+</html>

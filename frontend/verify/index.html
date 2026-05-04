@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Verify Ticket — Jam Nights</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../booking/styles.css" />
+    <style>
+      .status { padding: 28px; text-align:center; border-radius: 18px; margin-top: 18px; }
+      .status h2 { font-family:"Syne",sans-serif; font-size: 32px; margin-bottom: 8px; }
+      .ok { background: rgba(60,200,120,0.12); border:1px solid rgba(60,200,120,0.4); color:#7ef0a8; }
+      .bad { background: rgba(240,80,80,0.12); border:1px solid rgba(240,80,80,0.4); color:#ff9a9a; }
+      .warn { background: rgba(244,195,74,0.10); border:1px solid var(--gold-soft); color: var(--gold-2); }
+      .info { margin-top: 16px; color: var(--muted); font-size:14px; }
+      .info div { display:flex; justify-content:space-between; padding: 8px 0; border-bottom:1px dashed var(--line); }
+      .info strong { color: var(--ink); font-family:"Syne",sans-serif; }
+    </style>
+  </head>
+  <body>
+    <div class="stars"></div>
+    <div class="moonlight"></div>
+    <main class="shell">
+      <section class="glass">
+        <p class="kicker">Ticket Verification</p>
+        <h1 class="display">Jam <span class="gold">Nights</span></h1>
+        <div id="result" class="status warn"><h2>Checking…</h2></div>
+        <div id="info" class="info"></div>
+      </section>
+    </main>
+    <script src="config.js"></script>
+    <script>
+      (async () => {
+        const params = new URLSearchParams(location.search);
+        const tid = params.get("tid");
+        const result = document.getElementById("result");
+        const info = document.getElementById("info");
+
+        if (!tid) {
+          result.className = "status bad";
+          result.innerHTML = "<h2>INVALID</h2><p>Missing ticket ID</p>";
+          return;
+        }
+
+        try {
+          const res = await fetch(`${window.JAM_CONFIG.BACKEND_URL}/verify-ticket/${encodeURIComponent(tid)}`);
+          const data = await res.json();
+
+          if (!data.found) {
+            result.className = "status bad";
+            result.innerHTML = "<h2>INVALID</h2><p>Ticket not found</p>";
+            return;
+          }
+          if (data.status === "cancelled") {
+            result.className = "status warn";
+            result.innerHTML = "<h2>CANCELLED</h2><p>This ticket has been cancelled</p>";
+          } else if (data.status === "paid" || data.status === "used") {
+            result.className = "status ok";
+            result.innerHTML = `<h2>VALID</h2><p>${data.status === "used" ? "Already scanned at entry" : "Welcome to Jam Nights"}</p>`;
+          } else {
+            result.className = "status bad";
+            result.innerHTML = `<h2>INVALID</h2><p>Status: ${data.status}</p>`;
+          }
+
+          info.innerHTML = `
+            <div><span>Ticket ID</span><strong>${data.ticket_id}</strong></div>
+            <div><span>Name</span><strong>${data.name}</strong></div>
+            <div><span>Tickets</span><strong>${data.qty}</strong></div>
+            <div><span>Amount</span><strong>₹${data.total_amount}</strong></div>
+          `;
+        } catch (err) {
+          result.className = "status bad";
+          result.innerHTML = "<h2>ERROR</h2><p>Could not verify. Try again.</p>";
+        }
+      })();
+    </script>
+  </body>
+</html>

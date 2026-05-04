@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login — Jam Nights</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../booking/styles.css" />
+</head>
+<body>
+  <div class="stars"></div>
+  <div class="moonlight"></div>
+
+  <main class="shell">
+    <section class="hero glass">
+      <p class="kicker">Welcome Back</p>
+      <h1 class="display">Jam <span class="gold">Nights</span></h1>
+      <p class="tagline">Login to view your tickets</p>
+
+      <form id="login-form" style="margin-top: 28px;">
+        <label>Email
+          <input type="email" name="email" required autocomplete="email" />
+        </label>
+        <label>Password
+          <input type="password" name="password" required minlength="6" autocomplete="current-password" />
+        </label>
+
+        <button class="cta" type="submit" id="login-btn">
+          <span>Login</span>
+        </button>
+      </form>
+
+      <p style="text-align:center; margin-top:18px; color:var(--muted); font-size:14px;">
+        Don't have an account? <a href="register.html" style="color:var(--gold);">Register</a>
+      </p>
+    </section>
+  </main>
+
+  <script src="../booking/config.js"></script>
+  <script>
+    const form = document.getElementById('login-form');
+    const btn = document.getElementById('login-btn');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(form));
+
+      btn.disabled = true;
+      btn.querySelector('span').textContent = 'Logging in...';
+
+      try {
+        const res = await fetch(`${window.JAM_CONFIG.BACKEND_URL}/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        const result = await res.json();
+
+        if (!res.ok) {
+          throw new Error(result.error || 'Login failed');
+        }
+
+        // Save token and user
+        localStorage.setItem('jam_token', result.token);
+        localStorage.setItem('jam_user', JSON.stringify(result.user));
+
+        alert('Login successful!');
+        window.location.href = 'my-tickets.html';
+
+      } catch (err) {
+        alert(err.message);
+        btn.disabled = false;
+        btn.querySelector('span').textContent = 'Login';
+      }
+    });
+  </script>
+</body>
+</html>

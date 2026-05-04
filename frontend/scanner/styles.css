@@ -1,0 +1,25 @@
+.status { padding: 18px; text-align:center; border-radius: 14px; margin-top: 16px; }
+.status h2 { font-family:"Syne",sans-serif; font-size: 22px; }
+.ok { background: rgba(60,200,120,0.12); border:1px solid rgba(60,200,120,0.4); color:#7ef0a8; }
+.bad { background: rgba(240,80,80,0.12); border:1px solid rgba(240,80,80,0.4); color:#ff9a9a; }
+.warn { background: rgba(244,195,74,0.10); border:1px solid var(--gold-soft); color: var(--gold-2); }
+#reader { margin-top: 16px; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); }
+#reader video { width: 100% !important; }
+/* 🔥 FLASH EFFECT */
+.flash-ok {
+  animation: flashGreen 0.4s;
+}
+
+.flash-bad {
+  animation: flashRed 0.4s;
+}
+
+@keyframes flashGreen {
+  0% { background: rgba(0,255,150,0.4); }
+  100% { background: transparent; }
+}
+
+@keyframes flashRed {
+  0% { background: rgba(255,60,60,0.4); }
+  100% { background: transparent; }
+}

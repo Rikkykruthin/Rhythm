@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Jam Nights — Rooftop Music Under the Stars</title>
+    <meta name="description" content="Jam Nights — live rooftop music, comfy seating, complimentary drinks. 23 May 2026 at Bathaakhaana, Miyapur. Book your ₹300 ticket." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- Ambient layers -->
+    <div class="stars" aria-hidden="true"></div>
+    <div class="moonlight" aria-hidden="true"></div>
+    <div class="fairy-lights" aria-hidden="true">
+      <span></span><span></span><span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span><span></span><span></span>
+    </div>
+    <div class="notes" aria-hidden="true">
+      <span>♪</span><span>♫</span><span>♩</span><span>♬</span><span>♪</span><span>♫</span>
+    </div>
+
+    <main class="shell">
+      <!-- HERO -->
+      <section class="hero glass">
+        <p class="kicker">Rooftop · Live Music · Night Sky</p>
+        <h1 class="display">Jam <span class="gold">Nights</span></h1>
+        <p class="tagline">An intimate evening of cosy vibes under the moonlight.</p>
+
+        <div class="meta">
+          <div><span class="lbl">Date</span><span class="val" id="ev-date"></span></div>
+          <div><span class="lbl">Time</span><span class="val" id="ev-time"></span></div>
+          <div><span class="lbl">Venue</span><a class="val link" id="ev-venue" target="_blank" rel="noopener"></a></div>
+          <div><span class="lbl">Ticket</span><span class="val gold" id="ev-price"></span></div>
+        </div>
+
+        <ul class="perks">
+          <li>🎶 Live music with cosy vibe</li>
+          <li>🛋️ Comfy bed + table seating</li>
+          <li>🥤 Complimentary soft drinks</li>
+        </ul>
+
+        <button class="cta" id="open-book">Book Your Spot</button>
+      </section>
+
+      <!-- BOOKING FORM -->
+      <section class="card glass hidden" id="form-card">
+        <h2 class="h2">Your Details</h2>
+        <form id="book-form" novalidate>
+          <label>Full Name
+            <input type="text" name="name" required minlength="2" maxlength="60" autocomplete="name" />
+          </label>
+          <label>Phone (UPI registered)
+            <input type="tel" name="phone" required pattern="[0-9]{10}" maxlength="10" inputmode="numeric" autocomplete="tel" />
+          </label>
+          <label>Email
+            <input type="email" name="email" required maxlength="120" autocomplete="email" />
+          </label>
+          <label>Tickets
+            <div class="qty">
+              <button type="button" data-q="-1">−</button>
+              <input type="number" name="qty" value="1" min="1" max="10" readonly />
+              <button type="button" data-q="1">+</button>
+            </div>
+          </label>
+
+          <div class="total">
+            <span>Total (Ticket + 2.36% gateway fee)</span>
+            <strong id="total-amt">-</strong>
+          </div>
+
+          <button class="cta" type="submit" id="pay-btn">
+            <span>Pay & Book</span>
+          </button>
+        </form>
+      </section>
+
+      <!-- TICKET -->
+      <section class="card glass hidden" id="ticket-card">
+        <div class="ticket">
+          <div class="ticket-head">
+            <p class="kicker">Confirmed</p>
+            <h2 class="display">Jam <span class="gold">Nights</span></h2>
+          </div>
+          <div class="ticket-body">
+            <div class="row"><span>Name</span><strong id="t-name"></strong></div>
+            <div class="row"><span>Tickets</span><strong id="t-qty"></strong></div>
+            <div class="row"><span>Total</span><strong id="t-total"></strong></div>
+            <div class="row"><span>Ticket ID</span><strong id="t-id" class="gold"></strong></div>
+            <div class="qr" id="qr"></div>
+            <p class="qr-note">Show this QR at the entrance</p>
+          </div>
+          <button class="cta ghost" id="dl-btn">Download Ticket</button>
+        </div>
+      </section>
+
+      <footer class="foot">© Jam Nights</footer>
+    </main>
+
+    <!-- Razorpay -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <!-- QR + html2canvas for download -->
+    <script src="qrcode.min.js"></script>
+    <script>
+      // Wait for QRCode library to load
+      window.qrCodeReady = typeof QRCode !== 'undefined';
+      console.log('QRCode library loaded:', window.qrCodeReady);
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script src="config.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
