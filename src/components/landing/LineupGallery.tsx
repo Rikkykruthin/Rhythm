@@ -289,7 +289,7 @@ type Tab = "lineup" | "gallery";
 /* ─── Main Export ───────────────────────────────────────── */
 export function LineupGallery() {
   return (
-    <section id="lineup" className="py-16 px-6">
+    <section id="Gallery" className="py-16 px-6">
       <div className="max-w-7xl mx-auto">
         {/* Section header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16 px-4">
