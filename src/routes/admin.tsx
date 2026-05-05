@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Lock, Shield, CheckCircle2, CircleDashed, Users, CreditCard } from "lucide-react";
 import { apiPost } from "@/lib/api";
 
@@ -9,6 +9,7 @@ export const Route = createFileRoute("/admin")({
 
 function AdminDashboard() {
   const [pin, setPin] = useState("");
+  const [authedPin, setAuthedPin] = useState(""); // saves PIN after login for refreshing 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -24,6 +25,7 @@ function AdminDashboard() {
       );
       setTickets(data.tickets);
       setIsAuthenticated(true);
+      setAuthedPin(adminPin); 
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -34,6 +36,10 @@ function AdminDashboard() {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     fetchStats(pin);
+  };
+
+  const handleRefresh = () => {
+    fetchStats(authedPin); // uses the saved PIN, not the empty input
   };
 
   if (!isAuthenticated) {
@@ -99,11 +105,12 @@ function AdminDashboard() {
             >
               Launch Scanner
             </Link>
-            <button 
-              onClick={() => fetchStats(pin)}
-              className="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-sm font-medium transition-colors"
+           <button 
+              onClick={handleRefresh}
+              disabled={loading}
+              className="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
             >
-              Refresh Data
+              {loading ? "Refreshing..." : "Refresh Data"}
             </button>
           </div>
         </header>
